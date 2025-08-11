@@ -1,0 +1,73 @@
+# =============================================================================
+# Python / Django Section
+# =============================================================================
+
+# Virtual Environment
+# This is the most important one for the backend. Never commit your venv.
+venv/
+
+# Byte-compiled / optimized / C files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django instance-specific files
+*.sqlite3
+*.log
+
+# Environment variables
+# CRITICAL: Contains secret keys, passwords, etc.
+.env
+.env.*
+!.env.example
+
+# Collected static files
+# It's better to run collectstatic on the server
+backend/static/
+backend/media/
+
+
+# =============================================================================
+# Node.js / React Section
+# =============================================================================
+
+# Dependencies
+# The most important one for the frontend. Reinstall with `npm install`.
+frontend/node_modules/
+
+# Production build folder
+frontend/build/
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Environment variables for React
+# Contains API keys or other secrets for the frontend
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Yarn PnP files
+frontend/.pnp/
+frontend/.pnp.js
+frontend/.pnp.loader.js
+
+# =============================================================================
+# Editor & OS Files
+# =============================================================================
+
+# VSCode
+.vscode/
+
+# JetBrains (PyCharm, WebStorm)
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
