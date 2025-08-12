@@ -5,6 +5,7 @@
 # Virtual Environment
 # This is the most important one for the backend. Never commit your venv.
 venv/
+myenv/
 
 # Byte-compiled / optimized / C files
 __pycache__/
@@ -35,6 +36,7 @@ backend/media/
 # Dependencies
 # The most important one for the frontend. Reinstall with `npm install`.
 frontend/node_modules/
+node_modules/
 
 # Production build folder
 frontend/build/
