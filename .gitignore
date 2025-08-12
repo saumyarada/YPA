@@ -71,3 +71,5 @@ frontend/.pnp.loader.js
 
 # Windows
 Thumbs.db
+
+venv/
