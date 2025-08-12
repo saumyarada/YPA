@@ -88,7 +88,7 @@ def combined(request):
             logger.info("Database connection closed.")
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 # @csrf_exempt
 @ensure_csrf_cookie
 @permission_classes([AllowAny])
@@ -114,7 +114,6 @@ def terminals(request):
         # Assuming your table is named 'Products' and has columns 'id', 'product_name', 'category', 'price'.
         sql_query = """
         EXEC [dbo].[sp_LSS_YPA_TERMINALS] 
-
         """
         
         # Execute the query, passing parameters as a tuple/list
