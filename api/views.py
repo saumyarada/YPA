@@ -31,9 +31,13 @@ def combined(request):
     start_date = data.get('start_date') 
     end_date = data.get('end_date') 
     dwell_type = data.get('dwell_type') 
-    terminal = data.get('terminal') 
+    terminal = data.get('terminal').strip()
     enabled = data.get('enabled')
-    
+
+    if dwell_type == 'industry' :
+        dwell_type = 'CPA,LO,TR'
+    else:
+        dwell_type = 'BOA,BOD,CPA,HOA,HOD,LO,STA,STD,TR'
 
     db_conn = None
     try:
