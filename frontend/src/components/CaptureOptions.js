@@ -7,6 +7,7 @@ function CaptureOptions({
   thruTrainCars,
   onCheckboxChange,
   onCapture,
+  isLoading,
 }) {
   return (
     <Box sx={{ pt: 2, display: 'flex', flexDirection: 'row', gap: 3, justifyContent: 'space-between' }}>
@@ -29,7 +30,7 @@ function CaptureOptions({
             label="Capture Cars on Through Trains (Rewheel Points Only)"
           />
         </FormGroup>
-        <Button variant="contained" color="primary" onClick={onCapture}>
+        <Button variant="contained" color="primary" onClick={onCapture} disabled={isLoading}>
           Capture
         </Button>
       </Box>

@@ -57,19 +57,10 @@ export const getTerminals = () => {
  * @param {object} options - The data to be sent.
  */
 export const captureTrainData = async (options) => {
-    console.log(options);
-
     const result = await apiClient('/combined/', {
         method: 'POST',
         body: options,
     });
 
-    console.log(result);
-
     return result;
-
-    // return apiClient('/combined/', {
-    //     method: 'POST',
-    //     body: options,
-    // });
 };
