@@ -1,9 +1,8 @@
-// src/App.js
 import './App.css';
 import theme from './theme';
 import React, { useState } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { DataGrid } from '@mui/x-data-grid';
 
@@ -33,12 +32,14 @@ function App() {
   const [currentRows, setCurrentRows] = useState([]);
   const [currentColumns, setCurrentColumns] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
+  const [isVisibleGrid, setIsVisibleGrid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // The final action handler, now clean and focused
   const handleCapture = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     setIsVisible(true);
+    setIsVisibleGrid(true);
     
     const apiResult = await captureTrainData({
       start_date: startDate,
@@ -48,9 +49,13 @@ function App() {
       enabled: thruTrainCars ? "1" : "0",
     });
 
-    setCurrentColumns(columnsCarsProcessed)
-    setCurrentRows(apiResult.data || [])
-    setIsLoading(false)
+    setCurrentColumns(columnsCarsProcessed);
+    setCurrentRows(apiResult.data || []);
+    setIsLoading(false);
+  };
+
+  const handleToggleGridVisibility = () => {
+    setIsVisibleGrid(prev => !prev); 
   };
 
   return (
@@ -84,23 +89,27 @@ function App() {
             thruTrainCars={thruTrainCars}
             onCheckboxChange={handleCheckboxChange}
             onCapture={handleCapture}
+            isLoading={isLoading}
           />
 
+          <Box sx={{ display: isVisible ? 'flex' : 'none', flexDirection: 'row', gap: 3, flexGrow: 1, justifyContent: 'space-between', alignItems: 'center' }}>
+            <Button sx={{ mt: 2 }} variant="contained" color="primary">Export to Excel</Button> {/* onClick={() => handleExport(prevSelection)} */}
+            <Button onClick={handleToggleGridVisibility} sx={{ mt: 2 }}>{isVisibleGrid ? 'Close' : 'Open'}</Button>  
+          </Box>
         </Box>
     
-        <Box sx={{ flexGrow: 1, p: 1, minHeight: 0, justifyContent: 'center', alignItems: 'center', display: isVisible ? 'flex' : 'none' }}> 
-          <div style={{ height: '95%', width: '90%' }}> {/* Set explicit height for DataGrid */}
+        <Box sx={{ flexGrow: 1, p: 1, minHeight: 0, justifyContent: 'center', alignItems: 'center', display: isVisibleGrid ? 'flex' : 'none' }}> 
+          <div style={{ height: '95%', width: '90%' }}> 
             <DataGrid
               rows={currentRows}
               columns={currentColumns}
               getRowId={(row) => row.ID}
               pageSize={5}
-              // checkboxSelection
               disableRowSelectionOnClick
               loading={isLoading}
               slotProps={{
                 loadingOverlay: {
-                  variant: 'linear-progress', // or 'skeleton', 'linear-progress'
+                  variant: 'linear-progress', // or 'skeleton'
                   noRowsVariant: 'linear-progress',
                 },
               }}
@@ -108,15 +117,10 @@ function App() {
                 columns: {
                   columnVisibilityModel: { ID: false } // Hide Fields
                 },
-                // sorting: {
-                //   sortModel: [{ field: 'STN_ID_333_FRM', sort: 'asc' }],
-                // },
               }}
               showToolbar
             />
           </div>
-          {/* <Button onClick={handleClose} sx={{ mt: 2 }}>Close</Button>
-          <Button onClick={() => handleExport(prevSelection)} sx={{ mt: 2 }} variant="contained" color="primary">Export to Excel</Button> */}
         </Box>
       </Box>
     </ThemeProvider>
