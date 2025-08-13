@@ -1,81 +1,74 @@
+// src/App.js
 import './App.css';
 import theme from './theme';
-import React, { useState } from 'react';
-
-// MUI Components
+import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
-import { Container, Box, TextField } from '@mui/material';
+import { Box } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 
-// Custom Hooks and Components
+// Hooks and Utils
 import { useTerminals } from './hooks/useTerminals';
+import { useCaptureForm } from './hooks/useCaptureForm';
+import { captureTrainData } from './utils/api';
+
+// Components
 import Header from './components/Header';
 import TerminalSelector from './components/TerminalSelector';
+import DateFilter from './components/DateFilter';
+import CaptureOptions from './components/CaptureOptions';
 
 function App() {
-  const [selectedValue, setSelectedValue] = useState('');
-  const { items, loading, error } = useTerminals(); // Use the custom hook
+  // Terminal Dropdown, Start/End Dates
+  const { terminals, loading, error, startDate, endDate, setStartDate, setEndDate } = useTerminals();
+  
+  // Checkbox, Radio Buttons, Capture Button
+  const { terminal, thruTrainCars, dwellType, handleTerminalChange, handleCheckboxChange, handleDwellTypeChange } = useCaptureForm();
 
-  const handleChange = (event) => {
-    setSelectedValue(event.target.value);
+  // The final action handler, now clean and focused
+  const handleCapture = () => {
+    captureTrainData({
+      start_date: startDate,
+      end_date: endDate,
+      dwell_type: dwellType,
+      terminal,
+      enabled: thruTrainCars ? "1" : "0",
+    });
   };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        {/* Header */}
         <Header />
         
-        {/* Main Content Area */}
-        <Container component="main" sx={{ pt: 6, maxWidth: '1400px' }}>
-          
-          {/* Terminal Dropdown, Start Date, End Date */}
+        <Box component="main" sx={{ pt: 6, maxWidth: '1000px', mx: 'auto', px: 1 }}>
+          {/* Top filter section */}
           <Box sx={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-            {/* Terminal Dropdown */}
             <TerminalSelector 
-              items={items}
-              selectedValue={selectedValue}
-              onChange={handleChange}
+              items={terminals}
+              selectedValue={terminal}
+              onChange={handleTerminalChange}
               loading={loading}
               error={error}
             />
-
-            {/* Start Date Input */}
-            <TextField
-              id="startDate"
-              label="Start Date"
-              type="date"
-              // value={startDate}
-              // onChange={(e) => setStartDate(e.target.value)}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              fullWidth
-              variant="outlined"
-            />
-
-            {/* End Date Input */}
-            <TextField
-              id="endDate"
-              label="End Date"
-              type="date"
-              // value={endDate}
-              // onChange={(e) => setEndDate(e.target.value)}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              fullWidth
-              variant="outlined"
+            <DateFilter 
+              startDate={startDate}
+              endDate={endDate}
+              onStartDateChange={(e) => setStartDate(e.target.value)}
+              onEndDateChange={(e) => setEndDate(e.target.value)}
             />
           </Box>
-          
-          {/* Add components here that depend on the selectedValue */}
-          <Box mt={4}>
-            {selectedValue && <p>Selected Terminal ID: {selectedValue}</p>}
-          </Box>
 
-        </Container>
+          {/* Use the new, self-contained component */}
+          <CaptureOptions
+            dwellType={dwellType}
+            onDwellTypeChange={handleDwellTypeChange}
+            thruTrainCars={thruTrainCars}
+            onCheckboxChange={handleCheckboxChange}
+            onCapture={handleCapture}
+          />
+
+        </Box>
       </Box>
     </ThemeProvider>
   );
