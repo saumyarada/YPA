@@ -5,5 +5,6 @@ urlpatterns = [
     # This path will handle POST requests to 'yourdomain.com/api/run-query/'
     # It directly calls the run_query function from the imported views module.
     path('combined/', views.combined, name='combined'),
-    path('terminals/', views.terminals, name='terminals')
+    path('terminals/', views.terminals, name='terminals'),
+    path('dwell_type/', views.dwell_type, name='dwell_type')
 ]
