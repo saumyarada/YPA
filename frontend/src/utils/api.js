@@ -56,7 +56,7 @@ export const getTerminals = () => {
  * Posts the captured train data to the API.
  * @param {object} options - The data to be sent.
  */
-export const captureTrainData = async (options) => {
+export const captureCarData = async (options) => {
     const result = await apiClient('/combined/', {
         method: 'POST',
         body: options,

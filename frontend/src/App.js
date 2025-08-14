@@ -5,6 +5,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Box, Button } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { DataGrid } from '@mui/x-data-grid';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 // Constants
 import {
@@ -14,13 +16,19 @@ import {
 // Hooks and Utils
 import { useTerminals } from './hooks/useTerminals';
 import { useCaptureForm } from './hooks/useCaptureForm';
-import { captureTrainData } from './utils/api';
+import { captureCarData } from './utils/api';
 
 // Components
 import Header from './components/Header';
 import TerminalSelector from './components/TerminalSelector';
 import DateFilter from './components/DateFilter';
 import CaptureOptions from './components/CaptureOptions';
+
+
+
+// npx watch 'npm run build' ./src
+// myenv\Scripts\activate
+// python manage.py runserver
 
 function App() {
   // Terminal Dropdown, Start/End Dates
@@ -41,7 +49,7 @@ function App() {
     setIsVisible(true);
     setIsVisibleGrid(true);
     
-    const apiResult = await captureTrainData({
+    const apiResult = await captureCarData({
       start_date: startDate,
       end_date: endDate,
       dwell_type: dwellType,
@@ -57,6 +65,26 @@ function App() {
   const handleToggleGridVisibility = () => {
     setIsVisibleGrid(prev => !prev); 
   };
+  
+  const handleExport = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Processed Cars');
+
+    // Define columns in the worksheet
+    worksheet.columns = currentColumns.map(col => ({
+      header: col.headerName,
+      key: col.field,
+      width: 20
+    }));
+
+    // Add the rows from your DataGrid
+    worksheet.addRows(currentRows);
+
+    // Generate the file and trigger the download
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), 'CarsProcessed.xlsx');
+  };
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -93,7 +121,7 @@ function App() {
           />
 
           <Box sx={{ display: isVisible ? 'flex' : 'none', flexDirection: 'row', gap: 3, flexGrow: 1, justifyContent: 'space-between', alignItems: 'center' }}>
-            <Button sx={{ mt: 2 }} variant="contained" color="primary">Export to Excel</Button> {/* onClick={() => handleExport(prevSelection)} */}
+            <Button sx={{ mt: 2 }} variant="contained" color="primary" disabled={isLoading} onClick={ handleExport }>Export to Excel</Button>
             <Button onClick={handleToggleGridVisibility} sx={{ mt: 2 }}>{isVisibleGrid ? 'Close' : 'Open'}</Button>  
           </Box>
         </Box>
